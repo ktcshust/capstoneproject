@@ -6,74 +6,106 @@
 
 ## Cấu trúc thư mục
 
-```
+```text
 capstoneproject/
-├── data/
-│   ├── drugs-side-effects-and-medical-condition/
-│   │   └── drugs_side_effects_drugs_com.csv        # Bộ 1
-│   ├── disease-symptom-description-dataset/
-│   │   ├── dataset.csv                             # Bộ 2 (chính)
-│   │   ├── Symptom-severity.csv
-│   │   ├── symptom_Description.csv
-│   │   └── symptom_precaution.csv
-│   └── medical_transcriptions/
-│       └── mtsamples.csv                           # Bộ 3
+├── .devcontainer/
+│   ├── devcontainer.json         # Cấu hình môi trường VS Code
+│   ├── docker-compose.yaml       # Cấu hình container Python & Neo4j
+│   └── Dockerfile                # Build image Python & Jupyter
+├── drugs-side-effects-and-medical-condition/ # Bộ 1 (Dữ liệu có cấu trúc)
+├── disease-symptom-description-dataset/      # Bộ 2 (Dữ liệu có cấu trúc)
+├── medical_transcriptions/                   # Bộ 3 (Dữ liệu phi cấu trúc)
 ├── src/
-│   ├── config.py              # Cấu hình đường dẫn, Neo4j, hằng số
-│   ├── utils.py               # Hàm tiện ích (normalize, Neo4j helpers)
-│   ├── ingest_bo1.py          # [Tuần 2] Ingest Drugs & Side Effects
-│   ├── ingest_bo2.py          # [Tuần 2] Ingest Disease Symptom Dataset
-│   ├── extract_entities.py    # [Tuần 3] NER trên Medical Transcriptions
-│   └── prepare_er.py          # [Tuần 4] Co-occurrence + Gold Set
+│   ├── config.py                 # Cấu hình đường dẫn, Neo4j, hằng số
+│   ├── utils.py                  # Hàm tiện ích (normalize, Neo4j helpers)
+│   ├── ingest_bo1.py             # [Tuần 2] Ingest Drugs & Side Effects
+│   ├── ingest_bo2.py             # [Tuần 2] Ingest Disease Symptom Dataset
+│   ├── extract_entities.py       # [Tuần 3] NER trên Medical Transcriptions
+│   ├── prepare_er.py             # [Tuần 4] Co-occurrence + Gold Set
+│   ├── entity_resolution_test.py # [Tuần 5] Đánh giá ER trên Gold Set (F1-score)
+│   └── entity_resolution_full.py # [Tuần 5] Chạy ER full pipeline tạo Mapping
 ├── notebooks/
-│   ├── eda_bo1.py             # [Tuần 1] EDA Bộ 1
-│   ├── eda_bo2.py             # [Tuần 1] EDA Bộ 2
-│   └── eda_bo3.py             # [Tuần 1] EDA Bộ 3
-├── output/                    # File trung gian (parquet, CSV)
-├── docs/                      # Tài liệu ontology, báo cáo
-├── .env.example               # Template cấu hình Neo4j
-├── requirements.txt
+│   ├── eda_bo1.py                # [Tuần 1] EDA Bộ 1
+│   ├── eda_bo2.py                # [Tuần 1] EDA Bộ 2
+│   └── eda_bo3.py                # [Tuần 1] EDA Bộ 3
+├── output_week_5/                # Thư mục chứa kết quả ER Tuần 5 (er_mapping.csv)
+├── .env.example                  # Template cấu hình Neo4j
+├── .gitignore                    # Cấu hình git
+├── requirements.txt              # Danh sách thư viện Python
 └── README.md
 ```
 
 ---
 
-## Cài đặt môi trường
+## Cài đặt môi trường local
 
 ### 1. Python dependencies
 
 ```bash
 pip install -r requirements.txt
+pip install jellyfish sentence-transformers scikit-learn networkx
 ```
 
 ### 2. scispaCy model (bắt buộc cho Tuần 3)
 
 ```bash
 pip install scispacy
-pip install https://s3-us-west-2.amazonaws.com/ai2-s3-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz
+pip install [https://s3-us-west-2.amazonaws.com/ai2-s3-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz](https://s3-us-west-2.amazonaws.com/ai2-s3-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz)
 ```
 
 ### 3. Cấu hình Neo4j
 
-Sau khi cài Neo4j Desktop và tạo database:
+Sau khi cài đặt Neo4j thông qua Docker/Devcontainer hoặc chạy cục bộ:
 
 ```bash
 cp .env.example .env
-# Mở .env, điền mật khẩu Neo4j vào NEO4J_PASSWORD
+# Mở .env, điền thông tin kết nối Neo4j (Ví dụ: bolt://neo4j:7687)
 ```
 
-**Bắt buộc bật 2 plugin trong Neo4j Desktop:**
+**Bắt buộc bật 2 plugin trong Neo4j:**
 - APOC (Advanced Procedures)
 - Graph Data Science (GDS)
 
 ---
 
+## Cài đặt môi trường (Devcontainer - Khuyên dùng)
+
+Project này đã được cấu hình sẵn **Docker Compose & VS Code Devcontainer**. Thay vì phải cài đặt thủ công Python, JupyterLab và Neo4j, bạn có thể khởi động toàn bộ hệ thống chỉ với 1 cú click chuột.
+
+### 1. Yêu cầu hệ thống
+- Cài đặt [Docker Desktop](https://www.docker.com/products/docker-desktop/) và đảm bảo Docker đang chạy.
+- Cài đặt [Visual Studio Code](https://code.visualstudio.com/).
+- Cài đặt extension **Dev Containers** của Microsoft trong VS Code.
+
+### 2. Khởi động môi trường
+1. Mở thư mục `capstoneproject` bằng VS Code.
+2. Nhấn `Ctrl + Shift + P` (hoặc `Cmd + Shift + P` trên Mac), gõ và chọn:
+   **`Dev Containers: Rebuild and Reopen in Container`**
+3. *Lưu ý: Lần chạy đầu tiên sẽ mất khoảng 5-10 phút để Docker tải image Python, Neo4j, tự động cài đặt các plugin (APOC, GDS) và tải mô hình NLP scispaCy. Các lần sau sẽ khởi động ngay lập tức.*
+
+### 3. Truy cập các dịch vụ (Đã tự động forward port)
+Sau khi Devcontainer khởi động xong, các dịch vụ sẽ chạy ngầm:
+
+- **JupyterLab:** `http://localhost:8888` (Không cần token/password)
+- **Neo4j Browser:** `http://localhost:7474`
+  - URL kết nối: `neo4j://localhost:7687` (hoặc `bolt://neo4j:7687` nếu kết nối từ code Python bên trong container).
+  - Username mặc định: `neo4j`
+  - Password mặc định: `capstone123` (được cấu hình trong `.devcontainer/docker-compose.yml`).
+
+### 4. Cấu hình biến môi trường
+File `.env` không còn bắt buộc do mọi thứ đã cấu hình cứng trong docker-compose. Tuy nhiên, hãy đảm bảo `src/config.py` của bạn trỏ đúng vào mạng nội bộ của Docker:
+```python
+NEO4J_URI = "bolt://neo4j:7687"
+NEO4J_USER = "neo4j"
+NEO4J_PASSWORD = "capstone123"
+
+---
+
 ## Chạy từng bước
 
-### Tuần 1 — EDA (không cần Neo4j)
+### Tuần 1 — EDA
 
 ```bash
-# Mở bằng VS Code Jupyter extension hoặc Jupyter Lab
 jupyter lab notebooks/eda_bo1.py
 jupyter lab notebooks/eda_bo2.py
 jupyter lab notebooks/eda_bo3.py
@@ -87,57 +119,36 @@ python src/ingest_bo1.py
 python src/ingest_bo2.py
 ```
 
-Sau khi chạy, KG v0.1 có:
-- ~900 Drug nodes
-- ~950 Disease nodes
-- ~130 Symptom nodes
-- SideEffect, DrugClass, BrandName nodes
-- Các edge: TREATS, CAUSES, BELONGS_TO, HAS_BRAND, HAS_SYMPTOM
-
 ### Tuần 3 — NER (cần scispaCy model)
 
 ```bash
 # Chạy thử với 500 doc đầu (nhanh, ~2-3 phút)
 python src/extract_entities.py --limit 500
 
-# Chạy toàn bộ (~5.000 doc, ~15-30 phút)
+# Chạy toàn bộ (~5.000 doc, ~3 phút)
 python src/extract_entities.py
-
-# Bỏ qua ingest Neo4j nếu chưa setup
-python src/extract_entities.py --skip-neo4j
 ```
-
-Output: `output/mentions.parquet`
+*Output: `output/mentions.parquet`*
 
 ### Tuần 4 — Chuẩn bị Entity Resolution
 
 ```bash
 python src/prepare_er.py
 ```
+*Output:*
+- `output/cooccurrence.csv` — cặp entity co-occur trong cùng document.
+- `output/gold_set_template.csv` — file template để gán nhãn thủ công (đã hoàn thiện thành `gold_set_annotated.csv`).
 
-Output:
-- `output/cooccurrence.csv` — cặp entity co-occur trong cùng document
-- `output/gold_set_template.csv` — **cần annotate tay** (xem hướng dẫn bên dưới)
+### Tuần 5 — Entity Resolution (Pipeline 2 Tầng)
 
----
+```bash
+# 1. Đánh giá thuật toán trên 150 mẫu (Jaro-Winkler + Cosine Similarity)
+python src/entity_resolution_test.py
 
-## Annotation Gold Set (Tuần 4 → Tuần 5)
-
-Sau khi chạy `prepare_er.py`, mở file `output/gold_set_template.csv`:
-
-1. Mở bằng Excel hoặc Google Sheets
-2. Điền cột `manual_canonical` cho mỗi mention
-3. Ví dụ:
-
-| entity_text | entity_type | manual_canonical |
-|-------------|-------------|-----------------|
-| htn | Disease | hypertension |
-| heart attack | Disease | myocardial infarction |
-| aspirin | Drug | aspirin |
-| tylenol | Drug | acetaminophen |
-
-4. Ghi chú: nếu không chắc, để trống hoặc ghi `SKIP`
-5. Mục tiêu: annotate ~150 cặp trước tuần 5
+# 2. Chạy thuật toán gom cụm (Clustering) trên toàn bộ 88k mentions
+python src/entity_resolution_full.py
+```
+*Output: Bảng tra cứu `er_mapping.csv` (lưu tại `output/` hoặc `output_week_5/`).*
 
 ---
 
@@ -171,37 +182,29 @@ Sau khi chạy `prepare_er.py`, mở file `output/gold_set_template.csv`:
 
 ## Tiến độ hiện tại
 
-### ✅ Hoàn thành (Tuần 1–4)
+### ✅ Hoàn thành (Tuần 1–5)
 
-- [x] Cấu trúc project, requirements.txt
+- [x] Cấu trúc project, requirements.txt, Devcontainer/Docker setup
 - [x] `src/config.py` — cấu hình tập trung
 - [x] `src/utils.py` — normalize text, Neo4j helpers
-- [x] `notebooks/eda_bo1.py` — EDA Bộ 1
-- [x] `notebooks/eda_bo2.py` — EDA Bộ 2
-- [x] `notebooks/eda_bo3.py` — EDA Bộ 3
-- [x] `src/ingest_bo1.py` — ingest Drugs & Side Effects
-- [x] `src/ingest_bo2.py` — ingest Disease Symptom
-- [x] `src/extract_entities.py` — NER scispaCy + dictionary
-- [x] `src/prepare_er.py` — co-occurrence + gold set template
+- [x] Tuần 1: EDA các bộ dữ liệu
+- [x] Tuần 2: Ingest Drugs, Side Effects & Disease Symptom
+- [x] Tuần 3: NER scispaCy + dictionary
+- [x] Tuần 4: Prepare ER (co-occurrence + gold set annotated)
+- [x] Tuần 5: Pipeline Entity Resolution 2 tầng
+  - [x] Đánh giá trên gold set: Jaro-Winkler + Sentence Embedding (F1 >= 0.80)
+  - [x] Lọc từ nhiễu y khoa (garbage filtering) & áp dụng Rule-based Dictionary (RxNorm/SNOMED)
+  - [x] Chạy full pipeline tạo NetworkX graph clustering → `er_mapping.csv`
 
-### 🔲 Cần làm (Tuần 5–8)
-
-#### Tuần 5 — Entity Resolution
-- [ ] `src/entity_resolution.py`
-  - Blocking theo 3 ký tự đầu + Metaphone
-  - Matching: Jaro-Winkler (jellyfish) + Sentence Embedding cosine similarity
-  - Combined score: `0.4 × jaro + 0.6 × cosine`
-  - Auto-merge nếu score >= 0.92, review tay nếu 0.80–0.92
-  - Đánh giá trên gold set: Precision, Recall, F1
-  - Output: `output/er_mapping.csv`
+### 🔲 Cần làm (Tuần 6–8)
 
 #### Tuần 6 — Merge vào Neo4j + CO_MENTIONED
 - [ ] `src/build_kg.py`
-  - Dùng er_mapping.csv để link mention về canonical entity
+  - Dùng `er_mapping.csv` để link mention về canonical entity
   - Tạo/update node từ Bộ 3 (entity mới chưa có trong KG)
-  - Tạo edge `CO_MENTIONED` từ cooccurrence.csv
+  - Tạo edge `CO_MENTIONED` từ `cooccurrence.csv`
   - Tạo edge `TREATED_BY_SPECIALTY` từ metadata Bộ 3
-  - KG v1.0 hoàn chỉnh → backup bằng neo4j-admin dump
+  - KG v1.0 hoàn chỉnh → backup bằng `neo4j-admin dump`
 
 #### Tuần 7 — Graph Analytics
 - [ ] `notebooks/graph_analytics.ipynb`
@@ -246,18 +249,4 @@ MATCH ()-[r]->() RETURN type(r) AS rel, count(*) AS count ORDER BY count DESC;
 
 ---
 
-## Lưu ý kỹ thuật
-
-1. **Luôn dùng `MERGE` không dùng `CREATE`** — script idempotent, chạy lại không sinh trùng.
-2. **Backup Neo4j trước mỗi bước merge lớn:**
-   ```bash
-   neo4j-admin database dump neo4j --to-path=./backups
-   ```
-3. **Thứ tự chạy script bắt buộc:**
-   `ingest_bo1.py` → `ingest_bo2.py` → `extract_entities.py` → `prepare_er.py` → `entity_resolution.py` → `build_kg.py`
-4. **Normalize text phải nhất quán** — dùng hàm từ `src/utils.py`, không tự normalize riêng.
-5. **scispaCy trên Windows** — dùng `n_process=1` (multiprocessing có thể lỗi trên Windows).
-
----
-
-*Phiên bản README: 1.0 | Cập nhật: 07/04/2026*
+*Cập nhật lần cuối: Tuần 5 - Hoàn thành Entity Resolution.*
