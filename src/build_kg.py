@@ -35,11 +35,26 @@ from src.utils import (
 # scispaCy nhận diện trước abbrev_dict).
 from src.extract_entities import ABBREVIATION_MAP
 
-# ── Đường dẫn input (Tuần 5 đã ghi vào output_week_5/) ──────────────────────
+# ── Đường dẫn input — ưu tiên output/ (fresh run), fallback output_week_5/ ──
 ROOT = Path(__file__).parent.parent
-WEEK5_DIR        = ROOT / "output_week_5"
-MENTIONS_PARQUET = WEEK5_DIR / "mentions.parquet"
-ER_MAPPING_CSV   = WEEK5_DIR / "er_mapping.csv"
+_OUTPUT_DIR  = ROOT / "output"
+_WEEK5_DIR   = ROOT / "output_week_5"
+
+def _resolve(filename: str) -> Path:
+    """Trả về path tồn tại: output/ ưu tiên, fallback output_week_5/."""
+    primary = _OUTPUT_DIR / filename
+    if primary.exists():
+        return primary
+    fallback = _WEEK5_DIR / filename
+    if fallback.exists():
+        return fallback
+    raise FileNotFoundError(
+        f"Không tìm thấy '{filename}' trong '{_OUTPUT_DIR}' hoặc '{_WEEK5_DIR}'.\n"
+        f"Hãy chạy: python src/extract_entities.py && python src/entity_resolution_full.py"
+    )
+
+MENTIONS_PARQUET = _resolve("mentions.parquet")
+ER_MAPPING_CSV   = _resolve("er_mapping.csv")
 
 # Hằng số riêng cho bước này
 MIN_MENTION_LEN          = 3       # Bỏ canonical quá ngắn

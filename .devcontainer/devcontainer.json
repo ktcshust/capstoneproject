@@ -22,7 +22,7 @@
         "7474": {"label": "Neo4j Browser", "onAutoForward": "silent"},
         "7687": {"label": "Neo4j Bolt", "onAutoForward": "silent"}
     },
-    "postCreateCommand": "pip install -r requirements.txt && pip install scispacy==0.5.4 && pip install https://s3-us-west-2.amazonaws.com/ai2-s2-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz",
+    "postCreateCommand": "pip install -r requirements.txt && pip install scispacy==0.5.4 && pip install https://s3-us-west-2.amazonaws.com/ai2-s3-scispacy/releases/v0.5.4/en_ner_bc5cdr_md-0.5.4.tar.gz",
     "postStartCommand": "nohup jupyter lab --ip=0.0.0.0 --port=8888 --no-browser --allow-root --NotebookApp.token='' --NotebookApp.password='' > jupyter.log 2>&1 &",
     "remoteUser": "vscode"
 }

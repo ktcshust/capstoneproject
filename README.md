@@ -158,6 +158,12 @@ Mở các file HTML trong browser — **không cần Neo4j**:
 
 **Tips demo**: Kéo thả node, hover xem chi tiết, zoom in/out.
 
+> **Lưu ý**: `output/` bị gitignore nên file HTML không có trong git. Nếu clone fresh, cần chạy lại:
+> ```bash
+> # Khởi động Neo4j (devcontainer hoặc Docker), restore backup, rồi:
+> python notebooks/visualization.py
+> ```
+
 ---
 
 ### 📌 Demo 7 — Entity Resolution (1 phút)

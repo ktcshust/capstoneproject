@@ -294,9 +294,9 @@ ABBREVIATION_MAP = {
 | Chỉ số | Giá trị |
 |--------|---------|
 | Entity unique (raw) | ~3,600 |
-| Mapping rows | ~3,000+ |
-| Real semantic merges | ~300+ |
-| Cosmetic-only | ~1,200+ |
+| Mapping rows | 8,017 |
+| Real semantic merges | 684 |
+| Cosmetic-only | 7,321 |
 
 > *Chi tiết: xem file `docs/entity_resolution_report.md`*
 
