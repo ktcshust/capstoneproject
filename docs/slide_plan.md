@@ -26,6 +26,25 @@
 
 ---
 
+## SLIDE 1.5 — PHÂN CÔNG NHÓM (0:30–1:00)
+
+**Tiêu đề:** Thành viên & Phân công
+
+**Bảng phân công (4 người):**
+
+| Thành viên | Phụ trách kỹ thuật | Trình bày |
+|------------|-------------------|-----------|
+| [Tên A] | Datasets, EDA, Ontology design, Pipeline overview | Slide 1–6 |
+| [Tên B] | NER (scispaCy), Entity Resolution, Gold Set | Slide 7–10 |
+| [Tên C] | Build KG (Neo4j), Graph Analytics (GDS) | Slide 11–16 |
+| [Tên D] | Visualization (pyvis), Demo live, Tài liệu | Slide 17–22 |
+
+**Design tip:** Dùng avatar/icon cho mỗi người, hoặc đơn giản là bảng 2 cột gọn.
+
+> **Lưu ý khi thuyết trình:** Người D đứng cạnh máy tính trong suốt phần demo (slide 12, 13, 18) để xử lý sự cố kỹ thuật nếu có.
+
+---
+
 ## SLIDE 2 — VẤN ĐỀ & ĐỘNG LỰC (0:30–1:30)
 
 **Tiêu đề:** Tại sao cần tích hợp dữ liệu y khoa?
